@@ -1,0 +1,20 @@
+{
+  "name": "alasdair333.alexa.skills.tivo",
+  "version": "1.0.0",
+  "description": "Alexa Skill for controlling a TiVO box or Virgin media box",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Alasdair MacLeod",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-app": "^4.1.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0"
+  }
+}
