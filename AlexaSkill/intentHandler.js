@@ -27,7 +27,7 @@ intentHandler.ChannelChanger = function(req, res) {
 
   rp(options).then( function(rpresponse){
       console.log(rpresponse);
-      res.say(rpresponse.body);
+      res.say(rpresponse.body.toString());
   });
 }
 

@@ -10,6 +10,8 @@ var bodyParser = require('body-parser');
 var channelList = require('./channelList');
 var config = require('./config.json');
 var net = require('net');
+var fuzzy = require('fuzzy');
+var channelMap = require('./channelmap');
 
 //URL for Tivo documentation on TiVO commands:
 // https://www.tivo.com/assets/images/abouttivo/resources/downloads/brochures/TiVo_TCP_Network_Remote_Control_Protocol.pdf
@@ -35,19 +37,31 @@ app.post('/change', function(req, res){
 
   if(validated === "success")
   {
-    var name = req.body.name.trim();
+    var name = channelMap.channelName(req.body.name.trim());
 
-    for(var c in channelList) {
-      if(channelList[c].name.toLowerCase() == name.toLowerCase())
-      {
-        console.log("Found");
-        console.log("FORCECH "+ channelList[c].number);
-        client.write("FORCECH "+ channelList[c].number+"\r");
-        res.send("OK");
-        return;
+    console.log("ChannelName: " + name);
+
+    var results = fuzzy.filter(name, channelMap.theList);
+    var matches = results.map(function(el) {
+      console.log(el);
+      return el.string.toLowerCase(); });
+
+    console.log("Matches: " + matches);
+
+    if(mathes.length > 0) {
+    //Shall we use the strongest match?
+    console.log("Found: " + matches[0]);
+      for(var c in channelList) {
+        if(channelList[c].name.toLowerCase() === matches[0].toLowerCase())
+        {
+          console.log("Found");
+          console.log("FORCECH "+ channelList[c].number);
+          client.write("FORCECH "+ channelList[c].number+"\r");
+          res.send("OK");
+          return;
+        }
       }
     }
-
     res.send("Not Found");
     return;
   }
@@ -59,6 +73,7 @@ app.listen(port, function(){
     console.log('CONNECTED TO: ' + config.tivo_ip + ':' + config.tivo_port);
   });
   console.log("TiVO controller server started on port: "+port);
+
 
 });
 
